@@ -1,0 +1,186 @@
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+
+syntax on
+
+set foldmethod=indent
+set autoindent
+set smartindent
+set hidden
+
+set hlsearch
+:noremap <silent> <Space> :silent noh<Bar>echo<CR>
+set incsearch
+
+set ignorecase
+set smartcase
+
+set vb t_vb=
+
+set title
+
+set scrolloff=3
+" Shortcut to rapidly toggle `set list`
+nmap <leader>l :set list!<CR>
+
+"  " Use the same symbols as TextMate for tabstops and EOLs
+set listchars=tab:▸\ ,eol:¬
+
+nnoremap ` '
+nnoremap ' ` 
+set wildmenu
+
+filetype on
+filetype plugin on
+
+" enable the project plugin
+" :let g:proj_flags="imstvcg"
+
+"set t_Co=256
+"colorscheme railscasts 
+
+colorscheme ir_black 
+"colorscheme desert 
+
+" , #perl # comments
+map ,# :s/^/#/<CR>
+
+" ,/ C/C++/C#/Java // comments
+map ,/ :s/^/\/\//<CR>
+
+" uncomment
+map ,? ￼/^\/\///<CR>
+
+nnoremap <C-W>, 10<C-W><
+nnoremap <C-W>. 10<C-W>>
+
+nnoremap <C-W>- 10<C-W>-
+nnoremap <C-W>+ 10<C-W>+
+
+" Remap control U to search for function name
+nnoremap <C-u> /function *&* *
+
+"let NERDTreeIgnore=['\~$','locales$','dijit$','dojox$','dojo$','pixastic$','akelos$','pdf$','util$']
+"nnoremap <silent> <C-n> :NERDTreeToggle $PROJECT_BASE_PATH/$CURVEPROJECT<CR>
+
+" command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
+" function! s:RunShellCommand(cmdline)
+"   let isfirst = 1
+"   let words = []
+"   for word in split(a:cmdline)
+"     if isfirst
+"       let isfirst = 0  " don't change first word (shell command)
+"     else
+"       if word[0] =~ '\v[%#<]'
+"         let word = expand(word)
+"       endif
+"       let word = shellescape(word, 1)
+"     endif
+"     call add(words, word)
+"   endfor
+"   let expanded_cmdline = join(words)
+"   botright new
+"   setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
+"   call append(line('$'), substitute(getline(2), '.', '=', 'g'))
+"   silent execute '$read !'. expanded_cmdline
+"   1
+" endfunction
+" 
+" function! RunTest()
+"     let filePath = expand("%:s")
+"     execute 'Shell '.$PROJECT_BASE_PATH.'/'.$CURVEPROJECT.'/script/test '.filePath
+" endfun
+
+" nnoremap <C-t> :call RunTest()<CR>
+
+" Set tabstop, softtabstop and shiftwidth to the same value
+command! -nargs=* Stab call Stab()
+function! Stab()
+  let l:tabstop = 1 * input('set tabstop = softtabstop = shiftwidth = ')
+  if l:tabstop > 0
+    let &l:sts = l:tabstop
+    let &l:ts = l:tabstop
+    let &l:sw = l:tabstop
+  endif
+  call SummarizeTabs()
+endfunction
+ 
+function! SummarizeTabs()
+  try
+    echohl ModeMsg
+    echon 'tabstop='.&l:ts
+    echon ' shiftwidth='.&l:sw
+    echon ' softtabstop='.&l:sts
+    if &l:et
+      echon ' expandtab'
+    else
+      echon ' noexpandtab'
+    endif
+  finally
+    echohl None
+  endtry
+endfunction
+
+function! OpenCommandT()
+    let s:file_path = expand("%:p")
+    if s:file_path =~ $PROJECT_BASE_PATH."/".$CURVEPROJECT
+        execute "CommandT $PROJECT_BASE_PATH/$CURVEPROJECT"
+        return
+    endif
+    execute "CommandT"
+endfunction
+nnoremap <silent> <C-t> :call OpenCommandT()<CR>
+
+:let g:CommandTMaxHeight=10
+
+
+
+"
+" Linting
+"
+
+if !exists('*PHPsynCHK')
+  function! PHPsynCHK()
+    ccl
+    let winnum = winnr() " get current window number
+    let linenum = line('.')
+    let colnum = col('.')
+    set errorformat=%m\ in\ %f\ on\ line\ %l
+    silent execute "%!php -l -f /dev/stdin | sed 's/\\/dev\\/stdin/".bufname("%")."/g' >.vimerr; cat"
+    silent cf .vimerr
+    cw " open the error window if it contains error
+    " return to the window with cursor set on the line of the first error (if any)
+    execute winnum . "wincmd w"
+    silent undo
+    silent cf
+    if 1 == len(getqflist())
+      w
+      call cursor(linenum, colnum)
+    endif
+  endfunction
+endif
+
+if !exists('*JSlint')
+  function! JSlint()
+    ccl
+    let winnum = winnr() " get current window number
+    let linenum = line('.')
+    let colnum = col('.')
+    set errorformat=%f\ at\ line\ %l\ character\ %c:\ %m
+    silent execute "%!/usr/bin/jslint/jslintfile.sh /dev/stdin | w3m -T text/html -dump | grep Problem | sed 's/^Problem/".bufname("%")."/' >.vimerr; cat"
+    silent cf .vimerr
+    cw " open the error window if it contains error
+    " return to the window with cursor set on the line of the first error (if any)
+    execute winnum . "wincmd w"
+    silent undo
+    silent cf
+    if 1 == len(getqflist())
+      w
+      call cursor(linenum, colnum)
+    endif
+  endfunction
+endif
+
+map ,j :call JSlint()<cr>

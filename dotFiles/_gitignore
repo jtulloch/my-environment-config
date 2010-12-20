@@ -1,0 +1,7 @@
+app/locales/
+config/locales/
+config/environments/cli.php
+sql_files/
+data_fixes/
+public/javascripts/release/
+public/javascripts/curve/.vimerr
