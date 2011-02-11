@@ -14,5 +14,14 @@ task :install do
       end
     end
   end
+
+  Dir.entries("oh-my-zsh_custom").each do |file|
+      full_path = File.expand_path("oh-my-zsh_custom/#{file}")
+      custom_folder = File.expand_path("~/.oh-my-zsh/custom")
+      full_link = "#{custom_folder}/#{file}"
+      if File.exist?(custom_folder) && !File.exist?(full_link)
+        File.symlink(full_path,full_link)
+      end
+  end
 end
 

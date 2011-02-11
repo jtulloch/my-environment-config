@@ -38,10 +38,10 @@ filetype plugin on
 " enable the project plugin
 " :let g:proj_flags="imstvcg"
 
-"set t_Co=256
-"colorscheme railscasts 
+set t_Co=256
+colorscheme railscasts 
 
-colorscheme ir_black 
+"colorscheme ir_black 
 "colorscheme desert 
 
 " , #perl # comments
@@ -123,6 +123,8 @@ function! SummarizeTabs()
   endtry
 endfunction
 
+let g:CommandTMaxFiles=20000
+
 function! OpenCommandT()
     let s:file_path = expand("%:p")
     if s:file_path =~ $PROJECT_BASE_PATH."/".$CURVEPROJECT
@@ -184,3 +186,15 @@ if !exists('*JSlint')
 endif
 
 map ,j :call JSlint()<cr>
+let hero_name = system("php ${SHAREDPATH}/scripts/getCurrentHeroName.php")
+let database_name = system("php ${SHAREDPATH}/scripts/getCurrentDatabaseName.php")
+let g:hero_name = system("echo -n ".hero_name)
+let g:database_name = system("echo -n ".database_name)
+
+let g:dbext_default_dbname = g:database_name
+let g:dbext_default_user = g:database_name
+let g:dbext_default_passwd = ''
+let g:dbext_default_host = '10.131.25.250'
+let g:dbext_default_type = 'PGSQL'
+let g:dbext_default_extra = '-v schema='.g:hero_name
+    

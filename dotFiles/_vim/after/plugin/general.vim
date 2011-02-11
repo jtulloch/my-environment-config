@@ -68,7 +68,7 @@ nnoremap <C-L> <C-W>l
 nnoremap <C-D> :qa<CR>
 nnoremap <C-A> :q<CR>
 
-helptags ~/.vim/doc
+"helptags ~/.vim/doc
 
 cabbr diff :VCSVimDiff
 
