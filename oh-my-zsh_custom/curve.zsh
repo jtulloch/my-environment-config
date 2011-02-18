@@ -57,7 +57,8 @@ alias cleanlog='echo -n > ~/public_html/*/log/*.log'
 
 alias migrateTest='root && ./script/migrateTest all install'
 alias migrate='root && ./script/migrateAll all install'
-alias clearbilling='db -f ~/clearbilling.sql'
+alias clearbilling='db -f ~/scripts/clearbilling.sql'
+alias clearLogTables='db -f ~/scripts/clean_log_tables.psql && db -c "clean_log_tables()"'
 
 alias cleandb='cleandatabase'
 alias dumpdb='dumpdatabase'

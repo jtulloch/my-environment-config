@@ -5,7 +5,7 @@ setopt COMPLETE_IN_WORD
 setopt RM_STAR_SILENT
 
 export PAGER=more
-
+export TERM=xterm-256color
 
 ###### ALIASES #####
 alias gemstall='sudo gem install --no-ri --no-rdoc'
