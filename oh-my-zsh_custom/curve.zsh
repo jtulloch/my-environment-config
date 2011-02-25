@@ -35,7 +35,7 @@ alias proc='gotoHeroPath app/installers/storedProcedures/'
 
 alias gitcommit='${SHAREDPATH}/scripts/gitcommit.rb'
 
-alias vi='/usr/bin/vim'
+alias vi='vim'
 
 alias tdb='psql -U test_$(getCurrentDatabaseName) -v schema=test_curvehero ${JOEL_PSQL_ARGS} test_$(getCurrentDatabaseName)'
 alias db='psql -U $(getCurrentDatabaseName) ${JOEL_PSQL_ARGS} -v schema=${CURVEPROJECT} $(getCurrentDatabaseName)'
@@ -68,6 +68,7 @@ alias cdb='createdb -h ${CURVE_POSTGRES_SERVER} -O $(getCurrentDatabaseName) $(g
 alias cdbuser='createuser -h ${CURVE_POSTGRES_SERVER} $(getCurrentDatabaseName)'
 
 alias ssh_adminosaur='ssh_to Adminosaur'
+alias get_url='/usr/local/server_deployment/scripts/get_instance_url.php -n'
 
 ###### FUNCTIONS #####
 #
