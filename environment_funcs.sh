@@ -3,11 +3,11 @@
 VALID_ENVIRONMENTS=( home curve )
 
 install_home() {
-    make_link `pwd`/oh-my-zsh_custom/joel.zsh $ZSH/custom/joel.zsh
+    make_link `pwd`/oh-my-zsh_custom/joel.zsh $HOME/.oh-my-zsh/custom/joel.zsh
 }
 
 install_curve() {
-    make_link `pwd`/oh-my-zsh_custom/curve.zsh $ZSH/custom/curve.zsh
+    make_link `pwd`/oh-my-zsh_custom/curve.zsh $HOME/.oh-my-zsh/custom/curve.zsh
 }
 
 process_environment() {

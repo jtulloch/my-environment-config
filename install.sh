@@ -10,7 +10,7 @@ argument_error() {
 }
 
 make_link() {
-	if [ -f $1 ]; then
+	if [ -e $1 ]; then
         if [ -L $2 ]; then
             echo "link $2 exists. unlinking before create."
             unlink $2
