@@ -1,5 +1,6 @@
 [core]
     excludesfile = /home/joel/.gitignore
+    editor = vim
 [user]
 	name = Joel Tulloch
 	email = joel.tulloch@curvedental.com
