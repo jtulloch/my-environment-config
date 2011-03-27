@@ -47,7 +47,8 @@ alias createTestSchema='psql ${JOEL_PSQL_ARGS} -U test_$(getCurrentDatabaseName)
 alias generateTestDatabase='createTestUser && createTestDatabase && createTestSchema'
 
 alias loadtestdata='root && cleandb app/installers/data/default_test_data.sql && cd -'
-alias loadustestdata='root && dropdb ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName) && createdb ${JOEL_PSQL_ARGS} -O $(getCurrentDatabaseName) $(getCurrentDatabaseName) && psql ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName) -f app/installers/data/us_multi_claim.sql && cd -'
+alias loadustestdata='root && cleandb app/installers/data/us_multi_claim.sql && cd -'
+alias dumpustestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump ${JOEL_PSQL_ARGS} -O $(getCurrentDatabaseName) > app/installers/data/us_multi_claim.sql && cd -'
 alias dumptestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump ${JOEL_PSQL_ARGS} -O $(getCurrentDatabaseName) > app/installers/data/default_test_data.sql && cd -'
 
 alias setadmin='db -f ${SHAREDPATH}/scripts/setAdminUser.sql'
@@ -89,6 +90,10 @@ getCurrentHeroName() {
 
 getCurrentBranch() {
     git branch 2> /dev/null | grep --color=never -e '\* ' | sed 's/^..\(.*\)/\1/'
+}
+
+getClientData() {
+    echo "dumpClient.sh $1 ca blah"
 }
 
 cleandatabase() {
@@ -169,30 +174,26 @@ runtest() {
             lastArg="${arg}"
         done
 
-        testPath='test/'
+        testPath='test/functional'
         case ${secondLastArg} in
         "-f"*)
-            testPath+='functional'
-
             if [ "${lastArg}" != "all" ]; then
                 testPath+="/controllers/"
             fi
         ;;
         "-m"*)
-            testPath+='unit'
-
             if [ "${lastArg}" != "all" ]; then
                 testPath+="/app/models/"
             fi
         ;;
         "-u"*)
-            testPath+='unit/us/'
+            testPath+='/us/'
         ;;
         "-l"*)
-            testPath+='unit/app/lib/'
+            testPath+='/app/lib/'
         ;;
         "-ak"*)
-            testPath+='unit/akelos/'
+            testPath+='/akelos/'
         ;;
         esac
 
@@ -202,8 +203,7 @@ runtest() {
 
         testArg+=${testPath}
 
-        echo ${testCommand}
-        echo ${testArg}
+        echo "Running: ${testArg}"
         cd ${CURVESPACE}/${CURVEPROJECT} && ${testCommand} ${testArg}
     fi
 }
@@ -215,6 +215,35 @@ proj () {
         export CURVEPROJECT=$1
         root
     fi
+}
+
+tproj() {
+    NO_ARGS=0
+    E_OPTERROR=85
+
+    local PROJECT
+    local LAYOUT
+
+    argument_error() {
+        echo "Usage: `basename $0` options (-p < project > -l < layout >)"
+    }
+
+    if [ $# -eq "$NO_ARGS" ]; then
+        argument_error
+    fi
+
+    while getopts ":p:l:" Option
+    do
+        case $Option in
+            p) PROJECT="${OPTARG}";;
+            l) LAYOUT="${OPTARG}" ;;
+            *) argument_error ;;
+        esac
+    done
+
+    shift $(($OPTIND - 1))
+
+    tmatt $PROJECT $LAYOUT
 }
 
 selectProject() {
@@ -256,5 +285,3 @@ IFS_BAK=
 clearProject() {
     export CURVEPROJECT=''
 }
-
-proj

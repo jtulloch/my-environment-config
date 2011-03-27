@@ -9,6 +9,8 @@ set foldmethod=indent
 set autoindent
 set smartindent
 set hidden
+set laststatus=2 
+set statusline=[POS=%04l,%04v]\ [LEN=%L]%=%F%m%r%h%w\ \ 
 
 set hlsearch
 :noremap <silent> <Space> :silent noh<Bar>echo<CR>
@@ -137,6 +139,9 @@ nnoremap <silent> <C-t> :call OpenCommandT()<CR>
 
 :let g:CommandTMaxHeight=10
 
+function! ForceSave()
+    silent execute ":w !sudo tee > /dev/null %"
+endfunction
 
 
 "

@@ -16,7 +16,7 @@ export ZSH_THEME="joel_curve"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git utils vi-mode)
+plugins=(git utils)
 
 source $ZSH/oh-my-zsh.sh
 

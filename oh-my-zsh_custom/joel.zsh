@@ -1,6 +1,9 @@
 # Prevent <ctrl-s> from freezing 
 stty -ixon
 
+bindkey -v
+
+unsetopt share_history
 setopt COMPLETE_IN_WORD
 setopt RM_STAR_SILENT
 
@@ -30,3 +33,23 @@ alias gdiff='g diff'
 
 alias resource='source ~/.zshrc'
 alias zrc='vi $ZSH/custom/joel.zsh && resource'
+
+#history
+setopt APPEND_HISTORY
+setopt hist_ignore_all_dups
+export HISTFILE=~/.zhistory
+export SAVEHIST=1000
+export PAGER=more
+
+tmatt() {
+    SESSION_NAME="${1}-${2}"
+    if tmux has -t $SESSION_NAME; then
+        if [ -z "$TMUX" ]; then
+            tmux attach-session -d -t $SESSION_NAME
+        else
+            tmux switch-client -t $SESSION_NAME
+        fi
+    else
+        tmux new-session -s $SESSION_NAME "teamocil ${2}"
+    fi
+}
