@@ -203,3 +203,4 @@ let g:dbext_default_host = '10.131.25.250'
 let g:dbext_default_type = 'PGSQL'
 let g:dbext_default_extra = '-v schema='.g:hero_name
     
+map ,cd :cd %:p:h<CR>

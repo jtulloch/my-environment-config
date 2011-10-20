@@ -1,6 +1,6 @@
 export PROJECT_BASE_PATH='/home/joel/public_html'
 export SHAREDPATH='/home/joel/Super-Shared'
-JOEL_PSQL_ARGS='-h10.131.25.250'
+JOEL_PSQL_ARGS='-h10.131.25.250 -Upostgres'
 
 if [ -f $HOME/.curverc ]; then
     source $HOME/.curverc
@@ -37,19 +37,22 @@ alias gitcommit='${SHAREDPATH}/scripts/gitcommit.rb'
 
 alias vi='vim'
 
-alias tdb='psql -U test_$(getCurrentDatabaseName) -v schema=test_curvehero ${JOEL_PSQL_ARGS} test_$(getCurrentDatabaseName)'
-alias db='psql -U $(getCurrentDatabaseName) ${JOEL_PSQL_ARGS} -v schema=${CURVEPROJECT} $(getCurrentDatabaseName)'
+alias tdb='psql -v schema=test_curvehero -h${CURVE_POSTGRES_SERVER} test_$(getCurrentDatabaseName)'
+alias db='psql -h${CURVE_POSTGRES_SERVER} -v schema=${CURVEPROJECT} $(getCurrentDatabaseName)'
 
 alias createTestUser='createuser ${JOEL_PSQL_ARGS} -s test_$(getCurrentDatabaseName)'
-alias createTestDatabase='createdb ${JOEL_PSQL_ARGS} test_$(getCurrentDatabaseName)'
-alias createTestSchema='psql ${JOEL_PSQL_ARGS} -U test_$(getCurrentDatabaseName) test_$(getCurrentDatabaseName) -c "CREATE SCHEMA test_curvehero;"'
+alias createTestDatabase='createdb -h${CURVE_POSTGRES_SERVER} -U test_$(getCurrentDatabaseName) test_$(getCurrentDatabaseName)'
+alias createTestSchema='psql -h${CURVE_POSTGRES_SERVER} test_$(getCurrentDatabaseName) -c "CREATE SCHEMA test_curvehero;"'
 
 alias generateTestDatabase='createTestUser && createTestDatabase && createTestSchema'
 
 alias loadtestdata='root && cleandb app/installers/data/default_test_data.sql && cd -'
 alias loadustestdata='root && cleandb app/installers/data/us_multi_claim.sql && cd -'
-alias dumpustestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump ${JOEL_PSQL_ARGS} -O $(getCurrentDatabaseName) > app/installers/data/us_multi_claim.sql && cd -'
-alias dumptestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump ${JOEL_PSQL_ARGS} -O $(getCurrentDatabaseName) > app/installers/data/default_test_data.sql && cd -'
+alias loadfinancialtestdata='root && cleandb app/installers/data/finance_test_data.sql && cd -'
+
+alias dumpfinancialtestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump -h${CURVE_POSTGRES_SERVER} -O $(getCurrentDatabaseName) > app/installers/data/finance_test_data.sql && cd -'
+alias dumpustestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump -h${CURVE_POSTGRES_SERVER} -O $(getCurrentDatabaseName) > app/installers/data/us_multi_claim.sql && cd -'
+alias dumptestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump -h${CURVE_POSTGRES_SERVER} -O $(getCurrentDatabaseName) > app/installers/data/default_test_data.sql && cd -'
 
 alias setadmin='db -f ${SHAREDPATH}/scripts/setAdminUser.sql'
 
@@ -64,9 +67,9 @@ alias clearLogTables='db -f ~/scripts/clean_log_tables.psql && db -c "clean_log_
 alias cleandb='cleandatabase'
 alias dumpdb='dumpdatabase'
 
-alias riptheheartoutofmyfuckingdatabasebecauseidontneeditanymore='dropdb -h ${CURVE_POSTGRES_SERVER} $(getCurrentDatabaseName)'
-alias cdb='createdb -h ${CURVE_POSTGRES_SERVER} -O $(getCurrentDatabaseName) $(getCurrentDatabaseName)'
-alias cdbuser='createuser -h ${CURVE_POSTGRES_SERVER} $(getCurrentDatabaseName)'
+alias riptheheartoutofmyfuckingdatabasebecauseidontneeditanymore='dropdb ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName)'
+alias cdb='createdb ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName)'
+alias cdbuser='createuser ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName)'
 
 alias ssh_adminosaur='ssh_to Adminosaur'
 alias get_url='/usr/local/server_deployment/scripts/get_instance_url.php -n'
@@ -94,6 +97,24 @@ getCurrentBranch() {
 
 getClientData() {
     echo "dumpClient.sh $1 ca blah"
+}
+
+loadlogtables() {
+    local FILE_NAME=$1
+    local SQL_DUMP_FILE
+
+    if [ -f $FILE_NAME ]; then 
+        SQL_DUMP_FILE=$FILE_NAME
+    elif [ -f ~/client_data/$FILE_NAME ]; then
+        SQL_DUMP_FILE=~/client_data/$FILE_NAME
+    else
+        return
+    fi
+
+    HERONAME=$(getCurrentHeroName)
+    CURRENT_DATABASE=$(getCurrentDatabaseName)
+
+    cat $SQL_DUMP_FILE | sed "s/\(SET search_path =\) [a-z]*,/\1 ${HERONAME},/g" | psql -X -q -a -1 -v ON_ERROR_STOP=1 --pset pager=off -h $CURVE_POSTGRES_SERVER -U $CURRENT_DATABASE -d $CURRENT_DATABASE
 }
 
 cleandatabase() {
@@ -157,55 +178,9 @@ dumpdatabase() {
 }
 
 runtest() {
-    local testCommand
-    local testArg
-    testCommand='./script/test'
-    testArg=()
+    cd ${CURVESPACE}/${CURVEPROJECT}
 
-    if [ -z $1 ]; then
-        echo "No file specified"
-    else
-        secondLastArg=''
-        lastArg=''
-        for arg in $@
-        do
-            testArg+="${secondLastArg}"
-            secondLastArg="${lastArg}"
-            lastArg="${arg}"
-        done
-
-        testPath='test/functional'
-        case ${secondLastArg} in
-        "-f"*)
-            if [ "${lastArg}" != "all" ]; then
-                testPath+="/controllers/"
-            fi
-        ;;
-        "-m"*)
-            if [ "${lastArg}" != "all" ]; then
-                testPath+="/app/models/"
-            fi
-        ;;
-        "-u"*)
-            testPath+='/us/'
-        ;;
-        "-l"*)
-            testPath+='/app/lib/'
-        ;;
-        "-ak"*)
-            testPath+='/akelos/'
-        ;;
-        esac
-
-        if [ "${lastArg}" != "all" ]; then
-            testPath+="${lastArg}"
-        fi
-
-        testArg+=${testPath}
-
-        echo "Running: ${testArg}"
-        cd ${CURVESPACE}/${CURVEPROJECT} && ${testCommand} ${testArg}
-    fi
+    script/runtest.sh "$@"
 }
 
 proj () {

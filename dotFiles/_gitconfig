@@ -41,7 +41,6 @@
     nl = log --pretty=format:'%h : %an(%ad) - %s' --graph --date=short
     propermerge = merge --squash --ff-only --no-commit
     save = stash save
+    rename = branch -m
 [diff]
 	tool = vimdiff
-[url "git@curvefiles:joel_hero.git"]
-    pushInsteadOf = "git@curvefiles:hero.git"
