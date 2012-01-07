@@ -1,0 +1,10 @@
+snippet glob
+	Ak::wtf("*****************************");
+	Ak::wtf("${1}");
+	Ak::wtf("*****************************");
+snippet wtf
+	Ak::wtf("${1} -> ".print_r(${2},true));
+snippet dump
+	Ak::dumpObject(${1});
+snippet dumps
+	Ak::dumpObjects(${1});
