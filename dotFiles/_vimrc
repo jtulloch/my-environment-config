@@ -1,130 +1,136 @@
+set nocompatible               " be iMproved
+filetype off                   " required!
+
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
 set expandtab
 
+set shortmess=atI
+
 syntax on
+
+let mapleader = ","
+
+" vundle bundles {{{
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" let Vundle manage Vundle
+" required! 
+Bundle 'gmarik/vundle'
+
+" My Bundles here:
+"
+" original repos on github
+Bundle 'tpope/vim-fugitive'
+Bundle 'pangloss/vim-javascript'
+
+" tComment
+Bundle "tComment"
+nnoremap // :TComment<CR>
+vnoremap // :TComment<CR>
+
+" SuperTab
+Bundle 'ervandew/supertab'
+
+" Ack
+Bundle "ack.vim"
+
+" vim-scripts repos
+Bundle 'L9'
+Bundle 'FuzzyFinder'
+
+" snippets
+"  Bundle 'garbas/vim-snipmate'
+Bundle 'msanders/snipmate.vim'
+"  " SnipMate Depedancies
+"  Bundle "MarcWeber/vim-addon-mw-utils"
+"  Bundle "tomtom/tlib_vim"
+"  Bundle 'honza/snipmate-snippets'
+
+" " Ctrl-h to complete and advance snippet
+" imap <C-h>     <Plug>(neocomplcache_snippets_expand)
+" smap <C-h>     <Plug>(neocomplcache_snippets_expand)
+
+
+" non github repos
+Bundle 'git://git.wincent.com/command-t.git'
+" *** To install command-t
+" cd ~/.vim/vundle/command-t/ruby
+" ruby extconf.rb
+" make
+
+filetype plugin indent on
+
+"
+" Brief help
+" :BundleList          - list configured bundles
+" :BundleInstall(!)    - install(update) bundles
+" :BundleSearch(!) foo - search(or refresh cache first) for foo
+" :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
+"
+" see :h vundle for more details or wiki for FAQ
+" NOTE: comments after Bundle command are not allowed..
+" }}}
+
 
 set foldmethod=indent
 set autoindent
 set smartindent
+
 set hidden
 set laststatus=2 
 set statusline=[POS=%04l,%04v]\ [LEN=%L]%=%F%m%r%h%w\ \ 
 
+" search
 set hlsearch
 :noremap <silent> <Space> :silent noh<Bar>echo<CR>
 set incsearch
-
 set ignorecase
+
 set smartcase
-
 set vb t_vb=
-
 set title
-
 set scrolloff=3
-" Shortcut to rapidly toggle `set list`
-nmap <leader>l :set list!<CR>
 
-"  " Use the same symbols as TextMate for tabstops and EOLs
-set listchars=tab:▸\ ,eol:¬
+set ruler
 
 nnoremap ` '
 nnoremap ' ` 
 set wildmenu
 
-filetype on
-filetype plugin on
-
-" enable the project plugin
-" :let g:proj_flags="imstvcg"
-
+" color
 set t_Co=256
-colorscheme railscasts 
+set background=dark
+colorscheme mike_wombat
 
-"colorscheme ir_black 
-"colorscheme desert 
-
-" , #perl # comments
-map ,# :s/^/#/<CR>
-
-" ,/ C/C++/C#/Java // comments
-map ,/ :s/^/\/\//<CR>
-
-" uncomment
-map ,? ￼/^\/\///<CR>
-
+" handy control shortcuts
 nnoremap <C-W>, 10<C-W><
 nnoremap <C-W>. 10<C-W>>
-
 nnoremap <C-W>- 10<C-W>-
 nnoremap <C-W>+ 10<C-W>+
+nnoremap <C-K> <C-W>k
+nnoremap <C-J> <C-W>j
+nnoremap <C-H> <C-W>h
+nnoremap <C-L> <C-W>l
+nnoremap <C-D> :qa<CR>
+
+" better scrolling
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
+
+" Wrapped lines goes down/up to next row, rather than next line in file.
+nnoremap j gj
+nnoremap k gk
+
+" change working directory to that of current file.
+cmap cd. lcd %:p:h
 
 " Remap control U to search for function name
 nnoremap <C-u> /function *&* *
 
-"let NERDTreeIgnore=['\~$','locales$','dijit$','dojox$','dojo$','pixastic$','akelos$','pdf$','util$']
-"nnoremap <silent> <C-n> :NERDTreeToggle $PROJECT_BASE_PATH/$CURVEPROJECT<CR>
-
-" command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
-" function! s:RunShellCommand(cmdline)
-"   let isfirst = 1
-"   let words = []
-"   for word in split(a:cmdline)
-"     if isfirst
-"       let isfirst = 0  " don't change first word (shell command)
-"     else
-"       if word[0] =~ '\v[%#<]'
-"         let word = expand(word)
-"       endif
-"       let word = shellescape(word, 1)
-"     endif
-"     call add(words, word)
-"   endfor
-"   let expanded_cmdline = join(words)
-"   botright new
-"   setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
-"   call append(line('$'), substitute(getline(2), '.', '=', 'g'))
-"   silent execute '$read !'. expanded_cmdline
-"   1
-" endfunction
-" 
-" function! RunTest()
-"     let filePath = expand("%:s")
-"     execute 'Shell '.$PROJECT_BASE_PATH.'/'.$CURVEPROJECT.'/script/test '.filePath
-" endfun
-
-" nnoremap <C-t> :call RunTest()<CR>
-
-" Set tabstop, softtabstop and shiftwidth to the same value
-command! -nargs=* Stab call Stab()
-function! Stab()
-  let l:tabstop = 1 * input('set tabstop = softtabstop = shiftwidth = ')
-  if l:tabstop > 0
-    let &l:sts = l:tabstop
-    let &l:ts = l:tabstop
-    let &l:sw = l:tabstop
-  endif
-  call SummarizeTabs()
-endfunction
- 
-function! SummarizeTabs()
-  try
-    echohl ModeMsg
-    echon 'tabstop='.&l:ts
-    echon ' shiftwidth='.&l:sw
-    echon ' softtabstop='.&l:sts
-    if &l:et
-      echon ' expandtab'
-    else
-      echon ' noexpandtab'
-    endif
-  finally
-    echohl None
-  endtry
-endfunction
-
+" CommandT {{{
 let g:CommandTMaxFiles=20000
 
 function! OpenCommandT()
@@ -138,69 +144,7 @@ endfunction
 nnoremap <silent> <C-t> :call OpenCommandT()<CR>
 
 :let g:CommandTMaxHeight=10
+" }}}
 
-function! ForceSave()
-    silent execute ":w !sudo tee > /dev/null %"
-endfunction
-
-
-"
-" Linting
-"
-
-if !exists('*PHPsynCHK')
-  function! PHPsynCHK()
-    ccl
-    let winnum = winnr() " get current window number
-    let linenum = line('.')
-    let colnum = col('.')
-    set errorformat=%m\ in\ %f\ on\ line\ %l
-    silent execute "%!php -l -f /dev/stdin | sed 's/\\/dev\\/stdin/".bufname("%")."/g' >.vimerr; cat"
-    silent cf .vimerr
-    cw " open the error window if it contains error
-    " return to the window with cursor set on the line of the first error (if any)
-    execute winnum . "wincmd w"
-    silent undo
-    silent cf
-    if 1 == len(getqflist())
-      w
-      call cursor(linenum, colnum)
-    endif
-  endfunction
-endif
-
-if !exists('*JSlint')
-  function! JSlint()
-    ccl
-    let winnum = winnr() " get current window number
-    let linenum = line('.')
-    let colnum = col('.')
-    set errorformat=%f\ at\ line\ %l\ character\ %c:\ %m
-    silent execute "%!/usr/bin/jslint/jslintfile.sh /dev/stdin | w3m -T text/html -dump | grep Problem | sed 's/^Problem/".bufname("%")."/' >.vimerr; cat"
-    silent cf .vimerr
-    cw " open the error window if it contains error
-    " return to the window with cursor set on the line of the first error (if any)
-    execute winnum . "wincmd w"
-    silent undo
-    silent cf
-    if 1 == len(getqflist())
-      w
-      call cursor(linenum, colnum)
-    endif
-  endfunction
-endif
-
-map ,j :call JSlint()<cr>
-let hero_name = system("php ${SHAREDPATH}/scripts/getCurrentHeroName.php")
-let database_name = system("php ${SHAREDPATH}/scripts/getCurrentDatabaseName.php")
-let g:hero_name = system("echo -n ".hero_name)
-let g:database_name = system("echo -n ".database_name)
-
-let g:dbext_default_dbname = g:database_name
-let g:dbext_default_user = g:database_name
-let g:dbext_default_passwd = ''
-let g:dbext_default_host = '10.131.25.250'
-let g:dbext_default_type = 'PGSQL'
-let g:dbext_default_extra = '-v schema='.g:hero_name
-    
-map ,cd :cd %:p:h<CR>
+" sudo save file
+cmap w!! w !sudo tee % >/dev/null
