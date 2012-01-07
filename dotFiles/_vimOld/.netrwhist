@@ -1,4 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =2
-let g:netrw_dirhist_1='/home/joel/public_html/joel_main/akelos/lib/AkUnitTest'
-let g:netrw_dirhist_2='/home/joel/public_html/joel_main/test'
