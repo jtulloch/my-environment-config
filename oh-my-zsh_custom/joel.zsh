@@ -20,6 +20,7 @@ alias findfile='find . -name '
 alias findgrep='find . -name "*.php" | xargs grep'
 alias lt='ls -lrth'
 alias ack='ack -ai'
+alias vi='vim'
 
 alias commitWarn='egrep -i "^\+\+\+|XXX|TODO|debug|wtf|dumpObject" | egrep -v "^-"'
 
