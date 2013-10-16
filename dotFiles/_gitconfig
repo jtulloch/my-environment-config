@@ -40,7 +40,9 @@
     showfiles = show --name-only
     nl = log --pretty=format:'%h : %an(%ad) - %s' --graph --date=short
     propermerge = merge --squash --ff-only --no-commit
+    fmerge = merge --ff-only
     save = stash save
     rename = branch -m
+    ll = log --pretty=format:'%h : %an - https://mingle.curvedms.org/projects/curve_hero/cards/%s'
 [diff]
 	tool = vimdiff

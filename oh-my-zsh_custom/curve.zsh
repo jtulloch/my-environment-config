@@ -26,6 +26,7 @@ compinit -i
 ###### ALIASES #####
 alias root='cd ~/public_html/$CURVEPROJECT'
 alias gotoHeroPath='root && cd'
+alias setErrorAll="root && sed -i config/config.php -e \"s/ini_get('error_reporting')/E_ALL/g\""
 
 alias contr='gotoHeroPath app/controllers'
 alias model='gotoHeroPath app/models'
@@ -42,6 +43,7 @@ alias db='psql -h${CURVE_POSTGRES_SERVER} -v schema=${CURVEPROJECT} $(getCurrent
 
 alias createTestUser='createuser ${JOEL_PSQL_ARGS} -s test_$(getCurrentDatabaseName)'
 alias createTestDatabase='createdb -h${CURVE_POSTGRES_SERVER} -U test_$(getCurrentDatabaseName) test_$(getCurrentDatabaseName)'
+alias dropTestDatabase='dropdb -h${CURVE_POSTGRES_SERVER} -U test_$(getCurrentDatabaseName) test_$(getCurrentDatabaseName)'
 alias createTestSchema='psql -h${CURVE_POSTGRES_SERVER} test_$(getCurrentDatabaseName) -c "CREATE SCHEMA test_curvehero;"'
 
 alias generateTestDatabase='createTestUser && createTestDatabase && createTestSchema'
@@ -50,17 +52,17 @@ alias loadtestdata='root && cleandb app/installers/data/default_test_data.sql &&
 alias loadustestdata='root && cleandb app/installers/data/us_multi_claim.sql && cd -'
 alias loadfinancialtestdata='root && cleandb app/installers/data/finance_test_data.sql && cd -'
 
-alias dumpfinancialtestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump -h${CURVE_POSTGRES_SERVER} -O $(getCurrentDatabaseName) > app/installers/data/finance_test_data.sql && cd -'
-alias dumpustestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump -h${CURVE_POSTGRES_SERVER} -O $(getCurrentDatabaseName) > app/installers/data/us_multi_claim.sql && cd -'
-alias dumptestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump -h${CURVE_POSTGRES_SERVER} -O $(getCurrentDatabaseName) > app/installers/data/default_test_data.sql && cd -'
+alias dumpfinancialtestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump -h${CURVE_POSTGRES_SERVER} -O -x -n test_curvehero $(getCurrentDatabaseName) > app/installers/data/finance_test_data.sql && cd -'
+alias dumpustestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump -h${CURVE_POSTGRES_SERVER} -O -x -n test_curvehero $(getCurrentDatabaseName) > app/installers/data/us_multi_claim.sql && cd -'
+alias dumptestdata='root && db -c "ALTER SCHEMA ${CURVEPROJECT} RENAME TO test_curvehero" && pg_dump -h${CURVE_POSTGRES_SERVER} -O -x -n test_curvehero $(getCurrentDatabaseName) > app/installers/data/default_test_data.sql && cd -'
 
 alias setadmin='db -f ${SHAREDPATH}/scripts/setAdminUser.sql'
 
-alias taillog='cleanlog && tail -f ~/public_html/*/log/*.log'
+alias taillog='cleanlog && root && tail -f log/*.log'
 alias cleanlog='echo -n > ~/public_html/*/log/*.log'
 
 alias migrateTest='root && ./script/migrateTest all install'
-alias migrate='root && ./script/migrateAll all install'
+alias migrate='root && ./script/migrateAll'
 alias clearbilling='db -f ~/scripts/clearbilling.sql'
 alias clearLogTables='db -f ~/scripts/clean_log_tables.psql && db -c "clean_log_tables()"'
 
@@ -73,6 +75,10 @@ alias cdbuser='createuser ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName)'
 
 alias ssh_adminosaur='ssh_to Adminosaur'
 alias get_url='/usr/local/server_deployment/scripts/get_instance_url.php -n'
+
+alias testrun='runtest -t all && ./script/test_functional -t 10 && ./script/jstest-quick'
+
+alias t='tmuxinator'
 
 ###### FUNCTIONS #####
 #
@@ -130,7 +136,9 @@ cleandatabase() {
             SQL_DUMP_FILE=${DATA_DUMP_DIR}/${CURVEPROJECT}_dump.sql
         fi
     else
-        if [ -f ${DATA_DUMP_DIR}/${FILE_NAME} ]; then
+        if [ -f ${FILE_NAME} ]; then
+            SQL_DUMP_FILE=${FILE_NAME}
+        elif [ -f ${DATA_DUMP_DIR}/${FILE_NAME} ]; then
             SQL_DUMP_FILE=${DATA_DUMP_DIR}/${FILE_NAME}
         elif [ -f ${CURVESPACE}/${CURVEPROJECT}/${FILE_NAME} ]; then
             SQL_DUMP_FILE=${CURVESPACE}/${CURVEPROJECT}/${FILE_NAME}        
@@ -141,8 +149,8 @@ cleandatabase() {
         fi
     fi
 
-    riptheheartoutofmyfuckingdatabasebecauseidontneeditanymore
-    cdb
+    # riptheheartoutofmyfuckingdatabasebecauseidontneeditanymore
+    # cdb
 
     CURRENT_DATABASE=$(getCurrentDatabaseName)
 
@@ -156,6 +164,7 @@ cleandatabase() {
     HERONAME=$(getCurrentHeroName)
 
     if [ "${RENAME_SCHEMA}" != "${HERONAME}" ]; then
+        db -c "DROP SCHEMA ${HERONAME} CASCADE"
         echo "Renaming schema from [${RENAME_SCHEMA}] to [${HERONAME}]..."
         db -c "ALTER SCHEMA ${RENAME_SCHEMA} RENAME TO ${HERONAME}"
     fi
@@ -174,7 +183,7 @@ dumpdatabase() {
         mkdir $DATA_DUMP_DIR
     fi
 
-    pg_dump -h ${CURVE_POSTGRES_SERVER} -U $(getCurrentDatabaseName) -f ${DATA_DUMP_DIR}/${DUMP_FILE_NAME} $(getCurrentDatabaseName)
+    pg_dump -h ${CURVE_POSTGRES_SERVER} -O -x -U $(getCurrentDatabaseName) -n $(getCurrentDatabaseName) -f ${DATA_DUMP_DIR}/${DUMP_FILE_NAME} $(getCurrentDatabaseName)
 }
 
 runtest() {

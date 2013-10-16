@@ -2,6 +2,7 @@
 stty -ixon
 
 bindkey -v
+bindkey \\C-R history-incremental-search-backward
 
 unsetopt share_history
 setopt COMPLETE_IN_WORD
@@ -9,6 +10,7 @@ setopt RM_STAR_SILENT
 
 export PAGER=more
 export TERM=xterm-256color
+export EDITOR=vim
 
 ###### ALIASES #####
 alias gemstall='sudo gem install --no-ri --no-rdoc'
@@ -20,9 +22,10 @@ alias findfile='find . -name '
 alias findgrep='find . -name "*.php" | xargs grep'
 alias lt='ls -lrth'
 alias ack='ack -ai'
+alias ag='ag -i'
 alias vi='vim'
 
-alias commitWarn='egrep -i "^\+\+\+|XXX|TODO|debug|wtf|dumpObject" | egrep -v "^-"'
+alias commitWarn='egrep -i "^\+\+\+|print|XXX|TODO|debug|wtf|dumpObject|console\.log|console\.time|console\.timeEnd|console\.debug|console\.dir" | egrep -v "^-"'
 
 alias zrc='vi ~/.zshrc && source ~/.zshrc'
 
@@ -54,3 +57,5 @@ tmatt() {
         tmux new-session -s $SESSION_NAME "teamocil ${2}"
     fi
 }
+
+[[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator

@@ -6,7 +6,12 @@ set shiftwidth=4
 set softtabstop=4
 set expandtab
 
+set ruler
+
 set shortmess=atI
+
+" ignore whitespace in diff mode 
+set diffopt+=iwhite
 
 syntax on
 
@@ -24,7 +29,13 @@ Bundle 'gmarik/vundle'
 "
 " original repos on github
 Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-bundler'
+Bundle 'tpope/vim-rake'
+Bundle 'tpope/vim-rails'
+Bundle 'tpope/vim-endwise'
 Bundle 'pangloss/vim-javascript'
+Bundle 'dalefukami/vim-code-cuts'
+Bundle 'airblade/vim-gitgutter'
 
 " tComment
 Bundle "tComment"
@@ -96,14 +107,18 @@ set scrolloff=3
 
 set ruler
 
-nnoremap ` '
-nnoremap ' ` 
+" nnoremap ` '
+" nnoremap ' ` 
 set wildmenu
 
 " color
 set t_Co=256
 set background=dark
 colorscheme mike_wombat
+
+" try clearing signcolumn for git gutter
+highlight clear SignColumn
+
 
 " handy control shortcuts
 nnoremap <C-W>, 10<C-W><
@@ -128,10 +143,14 @@ nnoremap k gk
 cmap cd. lcd %:p:h
 
 " Remap control U to search for function name
-nnoremap <C-u> /function *&* *
+nnoremap <C-u> /function *&* *\zs
 
 " CommandT {{{
 let g:CommandTMaxFiles=20000
+set wildignore+=tmp/*,public/javascripts/vendor/**,test/fixtures/public/**,public/instrumented-js/**
+
+" ack.vim
+let g:ackprg = 'ag --nogroup --nocolor --column'
 
 function! OpenCommandT()
     let s:file_path = expand("%:p")
