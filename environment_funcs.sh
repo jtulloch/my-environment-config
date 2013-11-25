@@ -15,8 +15,6 @@ process_environment() {
     do
         if [ $1 = $env ]; then
             install_$env
-        else
-            argument_error
         fi
     done
 }

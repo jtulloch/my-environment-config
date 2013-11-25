@@ -36,6 +36,7 @@ Bundle 'tpope/vim-endwise'
 Bundle 'pangloss/vim-javascript'
 Bundle 'dalefukami/vim-code-cuts'
 Bundle 'airblade/vim-gitgutter'
+Bundle 'wincent/Command-T'
 
 " tComment
 Bundle "tComment"
@@ -66,7 +67,7 @@ Bundle 'msanders/snipmate.vim'
 
 
 " non github repos
-Bundle 'git://git.wincent.com/command-t.git'
+" Bundle 'git://git.wincent.com/command-t.git'
 " *** To install command-t
 " cd ~/.vim/vundle/command-t/ruby
 " ruby extconf.rb

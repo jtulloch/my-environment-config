@@ -13,7 +13,7 @@ export TERM=xterm-256color
 export EDITOR=vim
 
 ###### ALIASES #####
-alias gemstall='sudo gem install --no-ri --no-rdoc'
+alias gemstall='gem install --no-ri --no-rdoc'
 alias install='sudo apt-get install'
 alias update='sudo apt-get update'
 alias upgrade='sudo aptitude safe-upgrade'

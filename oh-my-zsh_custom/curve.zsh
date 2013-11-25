@@ -1,5 +1,5 @@
 export PROJECT_BASE_PATH='/home/joel/public_html'
-export SHAREDPATH='/home/joel/Super-Shared'
+export SHAREDPATH='/home/joel/other_projects/Super-Shared'
 JOEL_PSQL_ARGS='-h10.131.25.250 -Upostgres'
 
 if [ -f $HOME/.curverc ]; then
