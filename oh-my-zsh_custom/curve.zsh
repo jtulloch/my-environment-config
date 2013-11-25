@@ -38,7 +38,7 @@ alias gitcommit='${SHAREDPATH}/scripts/gitcommit.rb'
 
 alias vi='vim'
 
-alias tdb='psql -v schema=test_curvehero -h${CURVE_POSTGRES_SERVER} test_$(getCurrentDatabaseName)'
+alias tdb='psql -v schema=test_joel_hero -h${CURVE_POSTGRES_SERVER} $(getCurrentDatabaseName)'
 alias db='psql -h${CURVE_POSTGRES_SERVER} -v schema=${CURVEPROJECT} $(getCurrentDatabaseName)'
 
 alias createTestUser='createuser ${JOEL_PSQL_ARGS} -s test_$(getCurrentDatabaseName)'
@@ -69,6 +69,9 @@ alias clearLogTables='db -f ~/scripts/clean_log_tables.psql && db -c "clean_log_
 alias cleandb='cleandatabase'
 alias dumpdb='dumpdatabase'
 
+##### REGRESSION TESTS #####
+alias cleardb="tdb -c \"set search_path to test_joel_hero;update test_database_name set name = ''\""
+
 alias riptheheartoutofmyfuckingdatabasebecauseidontneeditanymore='dropdb ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName)'
 alias cdb='createdb ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName)'
 alias cdbuser='createuser ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName)'
@@ -76,7 +79,7 @@ alias cdbuser='createuser ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName)'
 alias ssh_adminosaur='ssh_to Adminosaur'
 alias get_url='/usr/local/server_deployment/scripts/get_instance_url.php -n'
 
-alias testrun='runtest -t all && ./script/test_functional -t 10 && ./script/jstest-quick'
+alias testrun='runtest -t all && ./script/test_functional -t 4 && ./script/jstest-quick'
 
 alias t='tmuxinator'
 
