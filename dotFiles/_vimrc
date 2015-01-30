@@ -37,6 +37,7 @@ Bundle 'pangloss/vim-javascript'
 Bundle 'dalefukami/vim-code-cuts'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'wincent/Command-T'
+Bundle 'scrooloose/syntastic'
 
 " tComment
 Bundle "tComment"
@@ -115,7 +116,7 @@ set wildmenu
 " color
 set t_Co=256
 set background=dark
-colorscheme mike_wombat
+colorscheme distinguished
 
 " try clearing signcolumn for git gutter
 highlight clear SignColumn
@@ -146,9 +147,21 @@ cmap cd. lcd %:p:h
 " Remap control U to search for function name
 nnoremap <C-u> /function *&* *\zs
 
+" Faster 'next search repeat command' {{{3
+nnoremap Q :normal n.<CR>
+
+" syntastic {{{2
+" Note the inverted logic here. Use true to disable them.
+let g:syntastic_aggregate_errors = 1
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_ignore_files = ['akelos/','vendor/']
+let g:syntastic_php_checkers = ['phpcs']
+let g:syntastic_loc_list_height = 2
+
 " CommandT {{{
 let g:CommandTMaxFiles=20000
-set wildignore+=tmp/*,public/javascripts/vendor/**,test/fixtures/public/**,public/instrumented-js/**
+set wildignore+=tmp/*,public/javascripts/release/**,public/javascripts/vendor/**,test/fixtures/public/**,node_modules/**,public/instrumented-js/**
 
 " ack.vim
 let g:ackprg = 'ag --nogroup --nocolor --column'
@@ -168,3 +181,5 @@ nnoremap <silent> <C-t> :call OpenCommandT()<CR>
 
 " sudo save file
 cmap w!! w !sudo tee % >/dev/null
+
+set keywordprg=pman

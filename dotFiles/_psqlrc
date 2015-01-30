@@ -1,0 +1,15 @@
+\pset null '\\N'
+\set HISTSIZE 5000
+\timing
+\set G '\\x\\g\\x'
+\set PROMPT1 '%/%R%x%# '
+
+\set usr 'select * from users where id = '
+\set usrname 'select first_name,last_name,user_name from users where id = '
+\set line 'select * from line_items where id = '
+\set entry 'select * from transaction_entries where id = '
+\set trans 'select * from transactions where id = '
+\set test '\\i /home/joel/tools/sql/test.sql'
+\set testMigration '\\i /home/joel/tools/sql/testMigration.sql'
+
+set search_path TO :schema;
