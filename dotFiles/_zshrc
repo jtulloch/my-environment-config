@@ -21,3 +21,5 @@ plugins=(git utils)
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
+
+PATH=$PATH:$HOME/.rvm/bin:$HOME/other_projects/tools/cli # Add RVM to PATH for scripting

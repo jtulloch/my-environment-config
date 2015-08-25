@@ -1,10 +1,36 @@
-snippet glob
-	Ak::wtf("*****************************");
+snippet puts
+	print "${1}"${2}."\n";${3}
+snippet v
+	{$${1}}${2}
+snippet fun
+	${1:public }function ${2:FunctionName}(${3}) {
+		${4:// code...}
+	}
+snippet stack
+	$exceptionStackXXX = new Exception();
+	print $exceptionStackXXX->getTraceAsString();
+# Akelos snippets
+snippet deb
 	Ak::wtf("${1}");
-	Ak::wtf("*****************************");
 snippet wtf
-	Ak::wtf("${1} -> ".print_r(${2},true));
+	Ak::wtf("${1} -> ".print_r($${2}, true));
+snippet glob
+	Ak::wtf("*********************");
+	Ak::wtf("${1}");
+	Ak::wtf("*********************");
 snippet dump
-	Ak::dumpObject(${1});
+	Ak::dumpObject($${1});
 snippet dumps
-	Ak::dumpObjects(${1});
+	Ak::dumpObjects($${1});
+snippet pglob
+	print(\"*********************\\n\");
+	print("${1}");
+	print(\"********************\\n\");
+snippet dap
+	dojoAttachPoint='${1}'
+snippet dae
+	dojoAttachEvent='${1}'
+snippet testdie
+	$this->_db->connection->CompleteTrans(true); die;
+snippet eq
+	$this->assertEquals(${1},${2});

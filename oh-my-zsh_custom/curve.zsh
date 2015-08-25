@@ -1,6 +1,6 @@
 export PROJECT_BASE_PATH='/home/joel/public_html'
 export SHAREDPATH='/home/joel/other_projects/Super-Shared'
-JOEL_PSQL_ARGS='-h10.131.25.250 -Upostgres'
+JOEL_PSQL_ARGS='-h10.131.25.56 -Upostgres'
 
 if [ -f $HOME/.curverc ]; then
     source $HOME/.curverc
@@ -33,6 +33,8 @@ alias model='gotoHeroPath app/models'
 alias widget='gotoHeroPath public/javascripts/curve/'
 alias jsc='gotoHeroPath public/javascripts/'
 alias proc='gotoHeroPath app/installers/storedProcedures/'
+
+alias resetjs='root && cp app/views/main/TEMPLATE-_devcustom.tpl app/views/main/_devcustom.tpl'
 
 alias gitcommit='${SHAREDPATH}/scripts/gitcommit.rb'
 
@@ -70,7 +72,7 @@ alias cleandb='cleandatabase'
 alias dumpdb='dumpdatabase'
 
 ##### REGRESSION TESTS #####
-alias cleardb="tdb -c \"set search_path to test_joel_hero;update test_database_name set name = ''\""
+alias cleardb="psql ${JOEL_PSQL_ARGS} -U $(getCurrentDatabaseName) -v schema=test_$(getCurrentDatabaseName) $(getCurrentDatabaseName) -c \"set search_path to test_$(getCurrentDatabaseName); update test_database_name set name = 'XXX'\"";
 
 alias riptheheartoutofmyfuckingdatabasebecauseidontneeditanymore='dropdb ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName)'
 alias cdb='createdb ${JOEL_PSQL_ARGS} $(getCurrentDatabaseName)'
@@ -82,6 +84,8 @@ alias get_url='/usr/local/server_deployment/scripts/get_instance_url.php -n'
 alias testrun='runtest -t all && ./script/test_functional -t 4 && ./script/jstest-quick'
 
 alias t='tmuxinator'
+
+alias fix-file='/usr/local/code_sniffer/php-cs-fixer.phar fix'
 
 ###### FUNCTIONS #####
 #

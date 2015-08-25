@@ -1,4 +1,6 @@
 app/locales/
+app/controllers/sandbox_controller.php
+app/views/sandbox/index.tpl
 config/locales/
 config/environments/cli.php
 sql_files/
@@ -7,3 +9,4 @@ data_fixes/
 public/javascripts/release/
 public/javascripts/curve/.vimerr
 .agignore
+.sass-cache/

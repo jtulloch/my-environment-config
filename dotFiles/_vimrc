@@ -1,3 +1,5 @@
+set shell=/bin/sh
+
 set nocompatible               " be iMproved
 filetype off                   " required!
 
@@ -12,6 +14,18 @@ set shortmess=atI
 
 " ignore whitespace in diff mode 
 set diffopt+=iwhite
+set diffexpr=DiffW()
+function DiffW()
+let opt = ""
+ if &diffopt =~ "icase"
+   let opt = opt . "-i "
+ endif
+ if &diffopt =~ "iwhite"
+   let opt = opt . "-w " " vim uses -b by default
+ endif
+ silent execute "!diff -a --binary " . opt .
+   \ v:fname_in . " " . v:fname_new .  " > " . v:fname_out
+endfunction
 
 syntax on
 
@@ -113,6 +127,7 @@ set ruler
 " nnoremap ' ` 
 set wildmenu
 
+
 " color
 set t_Co=256
 set background=dark
@@ -161,7 +176,7 @@ let g:syntastic_loc_list_height = 2
 
 " CommandT {{{
 let g:CommandTMaxFiles=20000
-set wildignore+=tmp/*,public/javascripts/release/**,public/javascripts/vendor/**,test/fixtures/public/**,node_modules/**,public/instrumented-js/**
+set wildignore+=tmp/*,public/javascripts/release/**,public/javascripts/vendor/**,test/fixtures/public/**,node_modules/**,public/instrumented-js/**,vendor/**
 
 " ack.vim
 let g:ackprg = 'ag --nogroup --nocolor --column'
