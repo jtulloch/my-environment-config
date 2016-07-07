@@ -1,0 +1,10 @@
+    " Test running shortcuts
+    noremap <leader>tf mpG:vsc TestExplorer.RunAllTestsInContext<CR>`pzz
+    noremap <leader>tt :vsc TestExplorer.RunAllTestsInContext<CR>
+    noremap <leader>tl :vsc TestExplorer.RepeatLastRun<CR>
+
+    noremap <leader>ev :vsc Edit.OpenFile C:\Users\joel.tulloch\_vsvimrc<CR>
+    noremap <leader>sv :source C:\Users\joel.tulloch\_vsvimrc<CR>:echo "Reloaded vimrc"<cr>
+
+    noremap <leader>/ :vsc Edit.CommentSelection<cr>
+    noremap <leader>? :vsc Edit.UncommentSelection<cr>
