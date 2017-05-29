@@ -24,19 +24,22 @@ alias lt='ls -lrth'
 alias ack='ack -ai'
 alias ag='ag -i'
 alias vi='vim'
+alias t='tmuxinator'
 
 alias commitWarn='egrep -i "^\+\+\+|print|XXX|TODO|debug|wtf|dumpObject|console\.log|console\.time|console\.timeEnd|console\.debug|console\.dir" | egrep -v "^-"'
-
-alias zrc='vi ~/.zshrc && source ~/.zshrc'
 
 alias gnl='g nl -5'
 alias gco='g co'
 alias gba='git br && git br -a | grep --color=none "remotes/public"'
 alias st='gst .'
 alias gdiff='g diff'
+alias gh='GitHub'
 
 alias resource='source ~/.zshrc'
 alias zrc='vi $ZSH/custom/joel.zsh && resource'
+
+alias startPomo='node /Users/joel/projects/slack-status-changer/slackStatus.js pomo $(date -v +25M +"%H:%M")'
+alias stopPomo='node /Users/joel/projects/slack-status-changer/slackStatus.js'
 
 #history
 setopt APPEND_HISTORY
@@ -56,6 +59,28 @@ tmatt() {
     else
         tmux new-session -s $SESSION_NAME "teamocil ${2}"
     fi
+}
+
+# Open github in the browser
+function GitHub() {
+  groot
+
+  if [ ! -d .git ]; then
+    echo "ERROR: This isnt a git directory" && return false;
+  fi
+  git_url=`git config --get remote.origin.url`
+  echo "Git url ${git_url}"
+  if [[ $git_url == https://github* ]]; then
+    url=${git_url%.git}
+  else
+    if [[ $git_url == git@github.com* ]]; then
+      url="https://github.com/${${git_url:15}%.git}"
+  echo "url ${url}"
+    else
+      echo "ERROR: Remote origin is invalid" && return false;
+    fi
+  fi
+  open $url
 }
 
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator

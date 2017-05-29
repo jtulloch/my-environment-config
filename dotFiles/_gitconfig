@@ -4,7 +4,7 @@
   pager = diff-so-fancy | less --tabs=4 -RFX
 [user]
   name = Joel Tulloch
-  email = joel.tulloch@replicon.com
+  email = joel@jtulloch.com
 [merge]
   tool = vimdiff
 [color]

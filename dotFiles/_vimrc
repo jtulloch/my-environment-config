@@ -7,6 +7,13 @@ Plug 'tpope/vim-commentary'
 Plug 'mileszs/ack.vim'
 Plug 'kien/ctrlp.vim'
 Plug 'sickill/vim-pasta'
+Plug 'vim-syntastic/syntastic'
+Plug 'pangloss/vim-javascript'
+Plug 'Valloric/YouCompleteMe'
+Plug 'altercation/vim-colors-solarized'
+Plug 'chriskempson/base16-vim'
+Plug 'leafgarland/typescript-vim'
+Plug 'junegunn/rainbow_parentheses.vim'
 
 call plug#end()
 
@@ -15,8 +22,14 @@ set nocompatible
 " color
 set t_Co=256
 set background=dark
-colorscheme distinguished
+" colorscheme distinguished
+"
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
 
+colorscheme base16-materia
 
 set ruler
 syntax on
@@ -59,6 +72,9 @@ set wildmode=longest,list
 
 set wildignore+=tmp/*,public/javascripts/release/**,public/javascripts/vendor/**,test/fixtures/public/**,node_modules/**,public/instrumented-js/**,vendor/**
 
+" linting
+autocmd FileType javascript let b:syntastic_checkers = findfile('.eslintrc.js', '.;') != '' ? ['eslint'] : ['standard']
+
 " use ag for ack.vim
 let g:ackprg = 'ag --nogroup --nocolor --column'
 
@@ -71,6 +87,7 @@ let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
 let g:crlp_max_height = 10
 let g:crlp_max_files = 20000
+let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|resources/public/js/compiled\|www'
 
 " ignore whitespace in diff mode 
 set diffopt+=iwhite
@@ -124,3 +141,6 @@ cmap cd. lcd %:p:h
 
 " Faster 'next search repeat command' {{{3
 nnoremap Q :normal n.<CR>
+
+noremap <Leader>n :setlocal number!<CR>
+noremap <Leader>nr :setlocal relativenumber!<CR>
