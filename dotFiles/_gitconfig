@@ -51,6 +51,7 @@
   save = stash save
   rename = branch -m
   diff = diff -w
+  randomMerges = !git log --pretty=format:'%h - %s' --since='1 week ago' --merges | gshuf
 [diff]
   tool = vimdiff
   compactionHeuristic = true

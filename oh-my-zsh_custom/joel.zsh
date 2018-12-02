@@ -38,8 +38,9 @@ alias gh='GitHub'
 alias resource='source ~/.zshrc'
 alias zrc='vi $ZSH/custom/joel.zsh && resource'
 
-alias startPomo='node /Users/joel/projects/slack-status-changer/slackStatus.js pomo $(date -v +25M +"%H:%M")'
-alias stopPomo='node /Users/joel/projects/slack-status-changer/slackStatus.js'
+alias setStatus='node /Users/joel/projects/slack-status-changer/slackStatus.js'
+
+alias db='psql -h127.0.0.1 -Upostgres factory'
 
 #history
 setopt APPEND_HISTORY

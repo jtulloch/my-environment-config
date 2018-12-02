@@ -9,11 +9,13 @@ Plug 'kien/ctrlp.vim'
 Plug 'sickill/vim-pasta'
 Plug 'vim-syntastic/syntastic'
 Plug 'pangloss/vim-javascript'
-Plug 'Valloric/YouCompleteMe'
 Plug 'altercation/vim-colors-solarized'
 Plug 'chriskempson/base16-vim'
+Plug 'Quramy/tsuquyomi'
 Plug 'leafgarland/typescript-vim'
+Plug 'ianks/vim-tsx'
 Plug 'junegunn/rainbow_parentheses.vim'
+Plug 'tomlion/vim-solidity'
 
 call plug#end()
 
@@ -70,10 +72,22 @@ set statusline=[POS=%04l,%04v]\ [LEN=%L]%=%F%m%r%h%w\ \
 set wildmenu
 set wildmode=longest,list
 
-set wildignore+=tmp/*,public/javascripts/release/**,public/javascripts/vendor/**,test/fixtures/public/**,node_modules/**,public/instrumented-js/**,vendor/**
+set wildignore+=*/build/**,dist/**,tmp/*,public/javascripts/release/**,public/javascripts/vendor/**,test/fixtures/public/**,node_modules/**,public/instrumented-js/**,vendor/**,typings/**
 
 " linting
-autocmd FileType javascript let b:syntastic_checkers = findfile('.eslintrc.js', '.;') != '' ? ['eslint'] : ['standard']
+autocmd FileType javascript let b:syntastic_checkers = findfile('.eslintrc.js', '.;') != '' || findfile('.eslintrc', '.;') != '' ? ['eslint'] : ['standard']
+
+" trigger youcompleteme on '.'
+" if !exists(“g:ycm_semantic_triggers”)
+"   let g:ycm_semantic_triggers = {}
+"   endif
+" 
+" let g:ycm_semantic_triggers[‘typescript’] = [‘.’]
+
+let g:tsuquyomi_disable_default_mappings = 1
+let g:tsuquyomi_disable_quickfix = 1
+let g:syntastic_typescript_checkers = ['tsuquyomi']
+nmap <C-]> :TsuquyomiDefinition<CR>
 
 " use ag for ack.vim
 let g:ackprg = 'ag --nogroup --nocolor --column'
@@ -81,13 +95,16 @@ let g:ackprg = 'ag --nogroup --nocolor --column'
 let mapleader = ","
 
 " ctrl-p
+if exists("g:ctrlp_user_command")
+  unlet g:ctrlp_user_command
+endif
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 let g:ctrlp_map = '<C-T>'
 let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
 let g:crlp_max_height = 10
 let g:crlp_max_files = 20000
-let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|resources/public/js/compiled\|www'
+let g:ctrlp_custom_ignore = 'typings\|node_modules\|DS_Store\|git\|resources/public/js/compiled\|www\|dist\|server/build'
 
 " ignore whitespace in diff mode 
 set diffopt+=iwhite
