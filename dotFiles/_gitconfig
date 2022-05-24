@@ -2,6 +2,7 @@
   excludesfile = /home/joel/.gitignore
   editor = vim
   pager = diff-so-fancy | less --tabs=4 -RFX
+	autocrlf = input
 [user]
   name = Joel Tulloch
   email = joel@jtulloch.com
