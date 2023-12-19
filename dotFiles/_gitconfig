@@ -56,3 +56,5 @@
 [diff]
   tool = vimdiff
   compactionHeuristic = true
+[init]
+	defaultBranch = main
